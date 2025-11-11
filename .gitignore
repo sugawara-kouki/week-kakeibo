@@ -43,3 +43,6 @@ next-env.d.ts
 
 # package managers
 package-lock.json
+
+# clerk configuration (can include secrets)
+/.clerk/

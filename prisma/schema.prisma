@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// データベースプロバイダをmysqlに設定
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -----------------------------------------
+// エンティティの定義
+// -----------------------------------------
+
+model Transaction {
+  id          String   @id @default(uuid())
+  // 🔑 Clerkとの連携ポイント: ユーザーIDを必ず含める
+  userId      String   @db.VarChar(255) 
+  type        String // 'income' or 'expense'
+  amount      Float
+  date        DateTime @default(now())
+  description String?
+  
+  // リレーション
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  
+  account     Account  @relation(fields: [accountId], references: [id])
+  accountId   String
+
+  @@index([userId]) // userIdで検索が速くなるようにインデックスを張る
+}
+
+model Category {
+  id          String        @id @default(uuid())
+  // カテゴリ名: 例: '食費', '給与', '交通費'
+  name        String        @unique 
+  // カテゴリの色（UI表示用。必須ではないが便利）
+  color       String        @default("#cccccc") 
+
+  // ユーザーID: 🔑 どのユーザーのカスタムカテゴリか識別するため
+  userId      String        @db.VarChar(255) 
+
+  // リレーション: 多数の Transaction がこの Category に紐づく
+  transactions Transaction[] 
+
+  @@index([userId]) // ユーザーIDでの検索を高速化
+}
+
+model Account {
+  id          String        @id @default(uuid())
+  // 口座名: 例: 'メイン銀行', '現金', 'クレジットカードA'
+  name        String
+  // 初期残高 (あるいは現在の残高。集計時に使用)
+  initialBalance Float       @default(0) 
+
+  // ユーザーID: 🔑 どのユーザーの口座か識別するため
+  userId      String        @db.VarChar(255)
+
+  // リレーション: 多数の Transaction がこの Account に紐づく
+  transactions Transaction[]
+
+  @@unique([userId, name]) // 同じユーザーは同じ名前の口座を持たない
+  @@index([userId]) // ユーザーIDでの検索を高速化
+}

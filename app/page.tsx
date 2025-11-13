@@ -1,9 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
-import HomePage from "@/pages/homePage";
+import Home from "@/pages/home";
 
-export default async function Home() {
+export default async function HomePage() {
   // Clerkからセッション情報やユーザーIDを取得
   const authObject = await auth();
 
-  return <HomePage userId={authObject.userId} />;
+  return <Home userId={authObject.userId} />;
 }

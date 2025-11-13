@@ -6,8 +6,7 @@ import { ValidationSchemas as v } from "@/shared/lib/validation/schemas";
 // ----------------------------------------------------
 
 export const CategorySchema = z.object({
-  id: v.string(),
-  userId: v.requiredString(),
+  id: v.number(),
   name: v.requiredString(),
   color: v.string().default("#cccccc"),
 });

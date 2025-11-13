@@ -21,7 +21,12 @@ export async function getCategories(): Promise<Category[]> {
 
   const categories = await prisma.category.findMany({
     where: {
-      userId: userObj.userId,
+      OR: [{ userId: userObj.userId }, { userId: null }],
+    },
+    select: {
+      id: true,
+      name: true,
+      color: true,
     },
     orderBy: {
       name: "asc",

@@ -8,14 +8,14 @@ datasource db {
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
   userId      String   @db.VarChar(255)
   type        String
   amount      Float
   date        DateTime @default(now())
   description String?
-  categoryId  String
-  accountId   String
+  categoryId  Int
+  accountId   Int
   account     Account  @relation(fields: [accountId], references: [id])
   category    Category @relation(fields: [categoryId], references: [id])
 
@@ -25,17 +25,17 @@ model Transaction {
 }
 
 model Category {
-  id           String        @id @default(uuid())
+  id           Int           @id @default(autoincrement())
   name         String        @unique
   color        String        @default("#cccccc")
-  userId       String        @db.VarChar(255)
+  userId       String?       @db.VarChar(255)
   transactions Transaction[]
 
   @@index([userId])
 }
 
 model Account {
-  id             String        @id @default(uuid())
+  id             Int           @id @default(autoincrement())
   name           String
   initialBalance Float         @default(0)
   userId         String        @db.VarChar(255)

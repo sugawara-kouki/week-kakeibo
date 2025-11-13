@@ -12,7 +12,7 @@ export const TransactionTypeSchema = v.enum(["income", "expense"]);
 
 // ドメインモデルのスキーマ
 export const TransactionSchema = z.object({
-  id: v.string(),
+  id: v.number(),
   userId: v.requiredString(),
   type: TransactionTypeSchema,
   amount: v.positiveNumber(),
@@ -20,8 +20,8 @@ export const TransactionSchema = z.object({
   description: v.nullableMaxLengthString(255),
 
   // 外部キー
-  categoryId: v.string(),
-  accountId: v.string(),
+  categoryId: v.number(),
+  accountId: v.number(),
 
   // リレーションデータ（ドメインモデルでは必須）
   category: CategorySchema,

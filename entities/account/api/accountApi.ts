@@ -1,8 +1,9 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import type { Account } from "@/entities/account/model/schema";
+import { type Account, AccountsSchema } from "@/entities/account/model/schema";
 import { prisma } from "@/shared/lib/db";
+import { validateValue } from "@/shared/lib/validation/validateValue";
 
 /**
  * ユーザーのアカウント一覧を取得
@@ -24,5 +25,5 @@ export async function getAccounts(): Promise<Account[]> {
     },
   });
 
-  return accounts as Account[];
+  return validateValue(AccountsSchema, accounts);
 }

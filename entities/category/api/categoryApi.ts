@@ -1,8 +1,12 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import type { Category } from "@/entities/category/model/schema";
+import {
+  CategoriesSchema,
+  type Category,
+} from "@/entities/category/model/schema";
 import { prisma } from "@/shared/lib/db";
+import { validateValue } from "@/shared/lib/validation/validateValue";
 
 /**
  * ユーザーのカテゴリ一覧を取得
@@ -24,5 +28,5 @@ export async function getCategories(): Promise<Category[]> {
     },
   });
 
-  return categories as Category[];
+  return validateValue(CategoriesSchema, categories);
 }

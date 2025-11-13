@@ -13,6 +13,8 @@ export const AccountSchema = z.object({
   initialBalance: v.number().default(0),
 });
 
+export const AccountsSchema = z.array(AccountSchema);
+
 // フォーム入力用のスキーマ (Input Schema)
 export const AccountInputSchema = AccountSchema.omit({
   id: true, // クライアント側でIDは生成しない
@@ -28,6 +30,9 @@ export const AccountInputSchema = AccountSchema.omit({
 
 /** 最終的なドメインモデル型 (DBアクセス層から取得する型) */
 export type Account = z.infer<typeof AccountSchema>;
+
+/** 最終的なドメインモデル型 (DBアクセス層から取得する型) */
+export type Accounts = z.infer<typeof AccountsSchema>;
 
 /** フォームや外部APIからの入力に使用する型 */
 export type AccountInput = z.infer<typeof AccountInputSchema>;

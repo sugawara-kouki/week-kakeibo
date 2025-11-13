@@ -25,7 +25,15 @@
     "domains": {
       "next": "recommended",
       "react": "recommended"
-    }
+    },
+    "includes": [
+      "**",
+      "!.next/**",
+      "!out/**",
+      "!build/**",
+      "!next-env.d.ts",
+      "!node_modules/**"
+    ]
   },
   "assist": {
     "actions": {

@@ -1,30 +1,26 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { mapTransactionsToDomain } from "@/entities/transaction/model/mappers";
 import {
   type Transaction,
   type TransactionInput,
   TransactionInputSchema,
+  TransactionSchema,
+  TransactionsSchema,
 } from "@/entities/transaction/model/schema";
+import { getCurrentUserId } from "@/shared/lib/auth/getCurrentUserId";
 import { prisma } from "@/shared/lib/db";
+import { validateValue } from "@/shared/lib/validation/validateValue";
 
 export async function getTransactionsByPeriod(
   periodStart: Date,
   periodEnd: Date,
 ): Promise<Transaction[]> {
-  // ユーザーIDを取得する処理
-  const userObj = await auth();
-  if (!userObj.userId) {
-    throw new Error("UNAUTHORIZED; ユーザーが認証されていません。", {
-      cause: 401,
-    });
-  }
+  const userId = await getCurrentUserId();
 
   const transactions = await prisma.transaction.findMany({
     where: {
-      userId: userObj.userId, // Clerk IDでデータをフィルタリング
+      userId, // Clerk IDでデータをフィルタリング
       date: {
         gte: periodStart,
         lte: periodEnd,
@@ -32,8 +28,15 @@ export async function getTransactionsByPeriod(
     },
     // カテゴリとアカウントの情報も一緒に取得
     include: {
-      category: true,
-      account: true,
+      category: {
+        omit: { userId: true },
+      },
+      account: {
+        omit: { userId: true },
+      },
+    },
+    omit: {
+      userId: true,
     },
     orderBy: {
       date: "desc", // 日付降順でソート
@@ -41,19 +44,15 @@ export async function getTransactionsByPeriod(
   });
 
   // zodでバリデーションとマッピングを行う
-  return mapTransactionsToDomain(transactions);
+  return validateValue(TransactionsSchema, transactions);
 }
 
 export async function createTransaction(
   input: TransactionInput,
 ): Promise<Transaction> {
-  // 認証チェック
-  const userObj = await auth();
-  if (!userObj.userId) {
-    throw new Error("UNAUTHORIZED; ユーザーが認証されていません。", {
-      cause: 401,
-    });
-  }
+  console.log(input);
+
+  const userId = await getCurrentUserId();
 
   // 入力バリデーション
   const validatedInput = TransactionInputSchema.parse(input);
@@ -61,7 +60,7 @@ export async function createTransaction(
   // データベース保存
   const transaction = await prisma.transaction.create({
     data: {
-      userId: userObj.userId,
+      userId,
       type: validatedInput.type,
       amount: validatedInput.amount,
       date: validatedInput.date,
@@ -79,6 +78,5 @@ export async function createTransaction(
   revalidatePath("/");
 
   // ドメインモデルへの変換
-  const [domainTransaction] = mapTransactionsToDomain([transaction]);
-  return domainTransaction;
+  return validateValue(TransactionSchema, transaction);
 }

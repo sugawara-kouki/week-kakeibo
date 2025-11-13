@@ -13,7 +13,6 @@ export const TransactionTypeSchema = v.enum(["income", "expense"]);
 // ドメインモデルのスキーマ
 export const TransactionSchema = z.object({
   id: v.number(),
-  userId: v.requiredString(),
   type: TransactionTypeSchema,
   amount: v.positiveNumber(),
   date: v.date(),
@@ -23,15 +22,16 @@ export const TransactionSchema = z.object({
   categoryId: v.number(),
   accountId: v.number(),
 
-  // リレーションデータ（ドメインモデルでは必須）
+  // リレーションデータ
   category: CategorySchema,
   account: AccountSchema,
 });
 
+export const TransactionsSchema = z.array(TransactionSchema);
+
 // フォーム入力用のスキーマ
 export const TransactionInputSchema = TransactionSchema.omit({
   id: true, // 自動生成
-  userId: true, // サーバー側で取得
   category: true, // クライアントはIDだけ渡し、オブジェクト全体は不要
   account: true, // クライアントはIDだけ渡し、オブジェクト全体は不要
 }).extend({
@@ -39,6 +39,9 @@ export const TransactionInputSchema = TransactionSchema.omit({
   date: v.isoDateTime().or(v.date()),
   // description はフォームでは任意入力として扱う
   description: v.nullableString().optional(),
+  // categoryId と accountId はフォームから文字列として送信されるため、数値に変換
+  categoryId: z.coerce.number().int().positive(),
+  accountId: z.coerce.number().int().positive(),
 });
 
 // ----------------------------------------------------
@@ -50,6 +53,9 @@ export type TransactionType = z.infer<typeof TransactionTypeSchema>;
 
 /** 最終的なドメインモデル型 (DBアクセス層から取得する型) */
 export type Transaction = z.infer<typeof TransactionSchema>;
+
+/** 最終的なドメインモデル型 (DBアクセス層から取得する型) */
+export type Transactions = z.infer<typeof TransactionsSchema>;
 
 /** フォームや外部APIからの入力に使用する型 */
 export type TransactionInput = z.infer<typeof TransactionInputSchema>;

@@ -6,8 +6,7 @@ import { ValidationSchemas as v } from "@/shared/lib/validation/schemas";
 // ----------------------------------------------------
 
 export const AccountSchema = z.object({
-  id: v.string(),
-  userId: v.requiredString(),
+  id: v.number(),
   name: v.requiredString(),
   // initialBalance は float であり、デフォルト値を持つ
   initialBalance: v.number().default(0),

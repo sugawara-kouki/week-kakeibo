@@ -38,7 +38,7 @@ model Account {
   id             Int           @id @default(autoincrement())
   name           String
   initialBalance Float         @default(0)
-  userId         String        @db.VarChar(255)
+  userId         String?       @db.VarChar(255)
   transactions   Transaction[]
 
   @@unique([userId, name])

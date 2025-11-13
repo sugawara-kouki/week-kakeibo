@@ -1,10 +1,10 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import {
   CategoriesSchema,
   type Category,
 } from "@/entities/category/model/schema";
+import { getCurrentUserId } from "@/shared/lib/auth/getCurrentUserId";
 import { prisma } from "@/shared/lib/db";
 import { validateValue } from "@/shared/lib/validation/validateValue";
 
@@ -12,16 +12,11 @@ import { validateValue } from "@/shared/lib/validation/validateValue";
  * ユーザーのカテゴリ一覧を取得
  */
 export async function getCategories(): Promise<Category[]> {
-  const userObj = await auth();
-  if (!userObj.userId) {
-    throw new Error("UNAUTHORIZED; ユーザーが認証されていません。", {
-      cause: 401,
-    });
-  }
+  const userId = await getCurrentUserId();
 
   const categories = await prisma.category.findMany({
     where: {
-      OR: [{ userId: userObj.userId }, { userId: null }],
+      OR: [{ userId }, { userId: null }],
     },
     select: {
       id: true,

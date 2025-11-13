@@ -57,15 +57,15 @@
   - SignedIn/SignedOutコンポーネントを使用
   - _要件: 要件1（ユーザー認証）_
 
-- [ ] 6. 取引追加機能の実装
-- [ ] 6.1 useAddTransactionカスタムフックの実装
+- [x] 6. 取引追加機能の実装
+- [x] 6.1 useAddTransactionカスタムフックの実装
   - features/addTransaction/model/useAddTransaction.tsにカスタムフックを実装
   - ローディング状態とエラー状態を管理
   - createTransaction Server Actionを呼び出し
   - エラーハンドリングを実装
   - _要件: 要件2（取引データ管理）_
 
-- [ ] 6.2 AddTransactionFormコンポーネントの実装
+- [x] 6.2 AddTransactionFormコンポーネントの実装
   - features/addTransaction/ui/AddTransactionForm.tsxにフォームコンポーネントを実装
   - React Hook FormとZodを統合
   - フォームフィールド（種別、金額、日付、カテゴリ、説明）を実装

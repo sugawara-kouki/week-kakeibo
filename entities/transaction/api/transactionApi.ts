@@ -1,6 +1,13 @@
+"use server";
+
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { mapTransactionsToDomain } from "@/entities/transaction/model/mappers";
-import type { Transaction } from "@/entities/transaction/model/schema";
+import {
+  type Transaction,
+  type TransactionInput,
+  TransactionInputSchema,
+} from "@/entities/transaction/model/schema";
 import { prisma } from "@/shared/lib/db";
 
 export async function getTransactionsByPeriod(
@@ -35,4 +42,43 @@ export async function getTransactionsByPeriod(
 
   // zodでバリデーションとマッピングを行う
   return mapTransactionsToDomain(transactions);
+}
+
+export async function createTransaction(
+  input: TransactionInput,
+): Promise<Transaction> {
+  // 認証チェック
+  const userObj = await auth();
+  if (!userObj.userId) {
+    throw new Error("UNAUTHORIZED; ユーザーが認証されていません。", {
+      cause: 401,
+    });
+  }
+
+  // 入力バリデーション
+  const validatedInput = TransactionInputSchema.parse(input);
+
+  // データベース保存
+  const transaction = await prisma.transaction.create({
+    data: {
+      userId: userObj.userId,
+      type: validatedInput.type,
+      amount: validatedInput.amount,
+      date: validatedInput.date,
+      description: validatedInput.description ?? null,
+      categoryId: validatedInput.categoryId,
+      accountId: validatedInput.accountId,
+    },
+    include: {
+      category: true,
+      account: true,
+    },
+  });
+
+  // キャッシュ無効化
+  revalidatePath("/");
+
+  // ドメインモデルへの変換
+  const [domainTransaction] = mapTransactionsToDomain([transaction]);
+  return domainTransaction;
 }

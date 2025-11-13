@@ -44,7 +44,7 @@
   - 日付降順でソート
   - _要件: 要件3（期間別取引取得）_
 
-- [ ] 4.4 Transaction作成のServer Actionを実装
+- [x] 4.4 Transaction作成のServer Actionを実装
   - entities/transaction/api/transactionApi.tsにcreateTransaction関数を実装
   - 認証チェック、バリデーション、データベース保存を実行
   - キャッシュ無効化を実装

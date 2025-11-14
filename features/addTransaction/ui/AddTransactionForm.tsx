@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { ZodError } from "zod";
 import type { Account } from "@/entities/account/model/schema";
 import type { Category } from "@/entities/category/model/schema";
@@ -23,7 +23,6 @@ export function AddTransactionForm({
   accounts,
 }: AddTransactionFormProps) {
   const { execute, isLoading } = useLoadingAction();
-  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -39,32 +38,28 @@ export function AddTransactionForm({
   });
 
   const onSubmit = async (data: TransactionInput) => {
-    setError(null);
-
     await execute(
-      () => createTransaction(data),
+      () => {
+        createTransaction(data);
+        toast.success("取引を正常に登録しました");
+        // フォーム入力をリセット
+        reset();
+      },
       (error) => {
         // エラー種別を判定してメッセージを設定する
         if (error instanceof ZodError) {
-          setError("入力内容に誤りがあります");
+          toast.error("入力内容に誤りがあります");
         } else if (error.message.includes("UNAUTHORIZED")) {
-          setError("ログインが必要です");
+          toast.error("ログインが必要です");
         } else {
-          setError("エラーが発生しました");
+          toast.error("エラーが発生しました");
         }
       },
     );
-
-    reset();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* エラーメッセージ */}
-      {error && (
-        <div className="p-3 bg-red-100 text-red-700 rounded-md">{error}</div>
-      )}
-
       {/* 取引種別 */}
       <div>
         <label

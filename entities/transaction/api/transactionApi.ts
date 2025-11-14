@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import {
   type Transaction,
+  TransactionApiSchema,
   type TransactionInput,
-  TransactionInputSchema,
   TransactionSchema,
   TransactionsSchema,
 } from "@/entities/transaction/model/schema";
@@ -50,12 +50,10 @@ export async function getTransactionsByPeriod(
 export async function createTransaction(
   input: TransactionInput,
 ): Promise<Transaction> {
-  console.log(input);
-
   const userId = await getCurrentUserId();
 
-  // 入力バリデーション
-  const validatedInput = TransactionInputSchema.parse(input);
+  // API側のバリデーション
+  const validatedInput = TransactionApiSchema.parse(input);
 
   // データベース保存
   const transaction = await prisma.transaction.create({

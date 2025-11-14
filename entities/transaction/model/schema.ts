@@ -30,18 +30,25 @@ export const TransactionSchema = z.object({
 export const TransactionsSchema = z.array(TransactionSchema);
 
 // フォーム入力用のスキーマ
-export const TransactionInputSchema = TransactionSchema.omit({
+export const TransactionFormSchema = TransactionSchema.omit({
   id: true, // 自動生成
   category: true, // クライアントはIDだけ渡し、オブジェクト全体は不要
   account: true, // クライアントはIDだけ渡し、オブジェクト全体は不要
 }).extend({
   // date フィールドは、フォーム入力時は日付文字列として扱うため、型を上書き
-  date: v.isoDateTime().or(v.date()),
+  date: v.requiredString(),
   // description はフォームでは任意入力として扱う
   description: v.nullableString().optional(),
-  // categoryId と accountId はフォームから文字列として送信されるため、数値に変換
-  categoryId: z.coerce.number().int().positive(),
-  accountId: z.coerce.number().int().positive(),
+  // categoryId と accountId はフォームから文字列として送信されるため、文字列で扱う
+  categoryId: v.requiredString(),
+  accountId: v.requiredString(),
+});
+
+// API送信用スキーマ
+export const TransactionApiSchema = TransactionFormSchema.extend({
+  categoryId: v.requiredString().pipe(z.coerce.number()),
+  accountId: v.requiredString().pipe(z.coerce.number()),
+  date: v.requiredString().pipe(z.coerce.date()),
 });
 
 // ----------------------------------------------------
@@ -58,4 +65,6 @@ export type Transaction = z.infer<typeof TransactionSchema>;
 export type Transactions = z.infer<typeof TransactionsSchema>;
 
 /** フォームや外部APIからの入力に使用する型 */
-export type TransactionInput = z.infer<typeof TransactionInputSchema>;
+export type TransactionInput = z.infer<typeof TransactionFormSchema>;
+
+export type TransactionApiInput = z.infer<typeof TransactionApiSchema>;

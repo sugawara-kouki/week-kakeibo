@@ -1,17 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
 import type { Account } from "@/entities/account/model/schema";
 import type { Category } from "@/entities/category/model/schema";
 import { createTransaction } from "@/entities/transaction/api/transactionApi";
 import {
+  TransactionFormSchema,
   type TransactionInput,
-  TransactionInputSchema,
 } from "@/entities/transaction/model/schema";
 import { useLoadingAction } from "@/shared/lib/hooks/useLoadingAction";
+import { Select } from "@/shared/ui/Select";
 
 interface AddTransactionFormProps {
   categories: Category[];
@@ -29,11 +30,14 @@ export function AddTransactionForm({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
-    resolver: zodResolver(TransactionInputSchema),
+    control,
+  } = useForm<TransactionInput>({
+    resolver: zodResolver(TransactionFormSchema),
     defaultValues: {
       type: "expense",
       date: new Date().toISOString().split("T")[0],
+      categoryId: "",
+      accountId: "",
     },
   });
 
@@ -134,23 +138,22 @@ export function AddTransactionForm({
         <label htmlFor="categoryId" className="block text-sm font-medium mb-2">
           カテゴリ
         </label>
-        <select
-          id="categoryId"
-          {...register("categoryId")}
-          className="w-full px-3 py-2 border rounded-md"
-        >
-          <option value="">カテゴリを選択</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        {errors.categoryId && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.categoryId.message}
-          </p>
-        )}
+        <Controller
+          name="categoryId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              options={categories.map((category) => ({
+                value: String(category.id),
+                label: category.name,
+              }))}
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              placeholder="カテゴリを選択"
+              error={errors.categoryId?.message}
+            />
+          )}
+        />
       </div>
 
       {/* アカウント */}
@@ -158,23 +161,22 @@ export function AddTransactionForm({
         <label htmlFor="accountId" className="block text-sm font-medium mb-2">
           アカウント
         </label>
-        <select
-          id="accountId"
-          {...register("accountId")}
-          className="w-full px-3 py-2 border rounded-md"
-        >
-          <option value="">アカウントを選択</option>
-          {accounts.map((account) => (
-            <option key={account.id} value={account.id}>
-              {account.name}
-            </option>
-          ))}
-        </select>
-        {errors.accountId && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.accountId.message}
-          </p>
-        )}
+        <Controller
+          name="accountId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              options={accounts.map((account) => ({
+                value: String(account.id),
+                label: account.name,
+              }))}
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              placeholder="アカウントを選択"
+              error={errors.accountId?.message}
+            />
+          )}
+        />
       </div>
 
       {/* 説明 */}

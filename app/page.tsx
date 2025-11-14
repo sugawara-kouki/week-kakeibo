@@ -1,5 +1,4 @@
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { getAccounts } from "@/entities/account/api/accountApi";
 import { getCategories } from "@/entities/category/api/categoryApi";
 import Home from "@/pages/home";
@@ -10,7 +9,7 @@ export default async function HomePage() {
 
   // 未認証の場合はサインインページにリダイレクト
   if (!authObject.userId) {
-    redirect("/sign-in");
+    return <h1>ログインしてくれぇ</h1>;
   }
 
   // カテゴリとアカウントのデータを取得

@@ -13,8 +13,8 @@ export function useLoadingAction() {
    * @param action ローディングを用いて実行したい関数
    * @param onError エラー時に実行したい関数
    */
-  const execute = async <T>(
-    action: () => Promise<T>,
+  const execute = async (
+    action: () => void | Promise<void>,
     onError?: (error: Error) => void,
   ): Promise<void> => {
     setIsLoading(true);

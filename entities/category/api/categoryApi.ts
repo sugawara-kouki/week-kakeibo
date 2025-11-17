@@ -1,20 +1,17 @@
 "use server";
 
-import {
-  CategoriesSchema,
-  type Category,
-} from "@/entities/category/model/schema";
-import { getCurrentUserId } from "@/shared/lib/auth/getCurrentUserId";
+import { type CategoryList, CategoryListSchema } from "@/entities/category";
+import { getCurrentUserId } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/db";
-import { validateValue } from "@/shared/lib/validation/validateValue";
+import { validateValue } from "@/shared/lib/validation";
 
 /**
  * ユーザーのカテゴリ一覧を取得
  */
-export async function getCategories(): Promise<Category[]> {
+export async function getCategoryList(): Promise<CategoryList> {
   const userId = await getCurrentUserId();
 
-  const categories = await prisma.category.findMany({
+  const categoryList = await prisma.category.findMany({
     where: {
       OR: [{ userId }, { userId: null }],
     },
@@ -28,5 +25,5 @@ export async function getCategories(): Promise<Category[]> {
     },
   });
 
-  return validateValue(CategoriesSchema, categories);
+  return validateValue(CategoryListSchema, categoryList);
 }

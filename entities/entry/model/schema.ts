@@ -2,7 +2,7 @@ import z from "zod";
 import { AccountSchema } from "@/entities/account/model/schema";
 import { CategorySchema } from "@/entities/category/model/schema";
 import type { ValueOf } from "@/shared/lib/types";
-import { ValidationSchemas as v } from "@/shared/lib/validation/schemas";
+import { ValidationSchemas as v } from "@/shared/lib/validation";
 
 /**
  * 取引種別
@@ -42,7 +42,3 @@ export type Entry = z.infer<typeof EntrySchema>;
 
 export const EntryListSchema = z.array(EntrySchema);
 export type EntryList = z.infer<typeof EntryListSchema>;
-
-// 引き落とし先情報
-
-// 支出種別情報

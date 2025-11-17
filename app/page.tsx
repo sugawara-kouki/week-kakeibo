@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { getAccounts } from "@/entities/account/api/accountApi";
-import { getCategories } from "@/entities/category/api/categoryApi";
+import { getAccounts } from "@/entities/account";
+import { getCategories } from "@/entities/category";
 import { DashBoardPage } from "@/pages/dashboard";
 
 export default async function DashBoard() {

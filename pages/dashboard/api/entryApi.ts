@@ -1,16 +1,21 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import {
+  type Entry,
+  type EntryList,
+  EntryListSchema,
+  EntrySchema,
+} from "@/entities/entry";
 import { EntryApiSchema, type EntryForm } from "@/pages/dashboard/model/schema";
-import { type Entry, EntryListSchema, EntrySchema } from "@/shared/api/models";
-import { getCurrentUserId } from "@/shared/lib/auth/getCurrentUserId";
+import { getCurrentUserId } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/db";
-import { validateValue } from "@/shared/lib/validation/validateValue";
+import { validateValue } from "@/shared/lib/validation";
 
 export async function getTransactionsByPeriod(
   periodStart: Date,
   periodEnd: Date,
-): Promise<Entry[]> {
+): Promise<EntryList> {
   const userId = await getCurrentUserId();
 
   const transactions = await prisma.transaction.findMany({

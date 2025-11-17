@@ -6,16 +6,14 @@ import toast from "react-hot-toast";
 import { ZodError } from "zod";
 import type { Account } from "@/entities/account/model/schema";
 import type { Category } from "@/entities/category/model/schema";
+import { ENTRY_TYPE } from "@/entities/entry";
 import { createTransaction } from "@/pages/dashboard/api/entryApi";
 import {
   EntryFormSchema,
   type EntryForm as EntryFormType,
 } from "@/pages/dashboard/model/schema";
-import { ENTRY_TYPE } from "@/shared/api/models";
-import { useLoadingAction } from "@/shared/lib/hooks/useLoadingAction";
-import { Dialog } from "@/shared/ui/Dialog";
-import { RadioGroup } from "@/shared/ui/form/RadioGroup";
-import { Select } from "@/shared/ui/Select";
+import { useLoadingAction } from "@/shared/lib/hooks";
+import { Dialog, Input, RadioGroup, Select } from "@/shared/ui";
 
 interface EntryFormProps {
   categories: Category[];
@@ -76,6 +74,7 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
           {/* 取引種別 */}
           <RadioGroup
             label="種別"
+            // TODO:: optionsの定義はリファクタリング検討
             options={[
               { id: "incomeType", value: "income", label: "収入" },
               { id: "expenseType", value: "expense", label: "支出" },
@@ -85,24 +84,15 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
           />
 
           {/* 金額 */}
-          <div>
-            <label htmlFor="amount" className="block text-sm font-medium mb-2">
-              金額
-            </label>
-            <input
-              id="amount"
-              type="number"
-              step="0.01"
-              {...register("amount", { valueAsNumber: true })}
-              className="w-full px-3 py-2 border rounded-md"
-              placeholder="1000"
-            />
-            {errors.amount && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.amount.message}
-              </p>
-            )}
-          </div>
+          <Input
+            id="amount"
+            label="金額"
+            type="number"
+            step="0.01"
+            placeholder="1000"
+            register={register("amount", { valueAsNumber: true })}
+            error={errors.amount?.message}
+          />
 
           {/* 日付 */}
           <div>

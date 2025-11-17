@@ -9,7 +9,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { ToasterProvider } from "@/shared/providers/ToasterProvider";
+import { ToasterProvider } from "@/shared/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

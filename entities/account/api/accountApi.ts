@@ -1,17 +1,17 @@
 "use server";
 
-import { type Account, AccountsSchema } from "@/entities/account/model/schema";
-import { getCurrentUserId } from "@/shared/lib/auth/getCurrentUserId";
+import { type AccountList, AccountListSchema } from "@/entities/account";
+import { getCurrentUserId } from "@/shared/lib/auth";
 import { prisma } from "@/shared/lib/db";
-import { validateValue } from "@/shared/lib/validation/validateValue";
+import { validateValue } from "@/shared/lib/validation";
 
 /**
  * ユーザーのアカウント一覧を取得
  */
-export async function getAccounts(): Promise<Account[]> {
+export async function getAccountList(): Promise<AccountList> {
   const userId = await getCurrentUserId();
 
-  const accounts = await prisma.account.findMany({
+  const accountList = await prisma.account.findMany({
     where: {
       OR: [{ userId }, { userId: null }],
     },
@@ -25,5 +25,5 @@ export async function getAccounts(): Promise<Account[]> {
     },
   });
 
-  return validateValue(AccountsSchema, accounts);
+  return validateValue(AccountListSchema, accountList);
 }

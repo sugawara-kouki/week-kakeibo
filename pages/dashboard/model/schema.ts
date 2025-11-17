@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { EntrySchema } from "@/shared/api/models";
-import { ValidationSchemas as v } from "@/shared/lib/validation/schemas";
+import { EntrySchema } from "@/entities/entry";
+import { ValidationSchemas as v } from "@/shared/lib/validation";
 
 /** フォーム入力用のバリデーションスキーマ */
 export const EntryFormSchema = EntrySchema.omit({

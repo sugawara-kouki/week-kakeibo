@@ -1,13 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  type Transaction,
-  TransactionApiSchema,
-  type TransactionInput,
-  TransactionSchema,
-  TransactionsSchema,
-} from "@/entities/transaction/model/schema";
+import { EntryApiSchema, type EntryForm } from "@/pages/dashboard/model/schema";
+import { type Entry, EntryListSchema, EntrySchema } from "@/shared/api/models";
 import { getCurrentUserId } from "@/shared/lib/auth/getCurrentUserId";
 import { prisma } from "@/shared/lib/db";
 import { validateValue } from "@/shared/lib/validation/validateValue";
@@ -15,7 +10,7 @@ import { validateValue } from "@/shared/lib/validation/validateValue";
 export async function getTransactionsByPeriod(
   periodStart: Date,
   periodEnd: Date,
-): Promise<Transaction[]> {
+): Promise<Entry[]> {
   const userId = await getCurrentUserId();
 
   const transactions = await prisma.transaction.findMany({
@@ -44,16 +39,14 @@ export async function getTransactionsByPeriod(
   });
 
   // zodでバリデーションとマッピングを行う
-  return validateValue(TransactionsSchema, transactions);
+  return validateValue(EntryListSchema, transactions);
 }
 
-export async function createTransaction(
-  input: TransactionInput,
-): Promise<Transaction> {
+export async function createTransaction(input: EntryForm): Promise<Entry> {
   const userId = await getCurrentUserId();
 
   // API側のバリデーション
-  const validatedInput = TransactionApiSchema.parse(input);
+  const validatedInput = EntryApiSchema.parse(input);
 
   // データベース保存
   const transaction = await prisma.transaction.create({
@@ -76,5 +69,5 @@ export async function createTransaction(
   revalidatePath("/");
 
   // ドメインモデルへの変換
-  return validateValue(TransactionSchema, transaction);
+  return validateValue(EntrySchema, transaction);
 }

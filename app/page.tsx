@@ -1,9 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { getAccounts } from "@/entities/account/api/accountApi";
 import { getCategories } from "@/entities/category/api/categoryApi";
-import Home from "@/pages/home";
+import { DashBoardPage } from "@/pages/dashboard";
 
-export default async function HomePage() {
+export default async function DashBoard() {
   // 認証チェック
   const authObject = await auth();
 
@@ -19,7 +19,7 @@ export default async function HomePage() {
   ]);
 
   return (
-    <Home
+    <DashBoardPage
       categories={categories}
       accounts={accounts}
       userId={authObject.userId}

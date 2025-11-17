@@ -13,7 +13,7 @@ import {
   type EntryForm as EntryFormType,
 } from "@/pages/dashboard/model/schema";
 import { useLoadingAction } from "@/shared/lib/hooks";
-import { Dialog, Input, RadioGroup, Select } from "@/shared/ui";
+import { Dialog, Input, RadioGroup, Select, TextArea } from "@/shared/ui";
 
 interface EntryFormProps {
   categories: Category[];
@@ -95,20 +95,13 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
           />
 
           {/* 日付 */}
-          <div>
-            <label htmlFor="date" className="block text-sm font-medium mb-2">
-              日付
-            </label>
-            <input
-              id="date"
-              type="date"
-              {...register("date")}
-              className="w-full px-3 py-2 border rounded-md"
-            />
-            {errors.date && (
-              <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
-            )}
-          </div>
+          <Input
+            id="date"
+            label="日付"
+            type="date"
+            register={register("date")}
+            error={errors.date?.message}
+          />
 
           {/* カテゴリ */}
           <div>
@@ -163,26 +156,14 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
           </div>
 
           {/* 説明 */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium mb-2"
-            >
-              説明（任意）
-            </label>
-            <textarea
-              id="description"
-              {...register("description")}
-              className="w-full px-3 py-2 border rounded-md"
-              rows={3}
-              placeholder="取引の詳細を入力"
-            />
-            {errors.description && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.description.message}
-              </p>
-            )}
-          </div>
+          <TextArea
+            id="description"
+            label="説明（任意）"
+            rows={3}
+            placeholder="取引の詳細を入力"
+            register={register("description")}
+            error={errors.description?.message}
+          />
 
           {/* 送信ボタン */}
           <button

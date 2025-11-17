@@ -1,3 +1,2 @@
 export { Dialog } from "./Dialog";
-export { Input, Radio, RadioGroup, TextArea } from "./form";
-export { Select } from "./Select";
+export { Input, Radio, RadioGroup, Select, TextArea } from "./form";

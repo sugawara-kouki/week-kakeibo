@@ -104,56 +104,44 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
           />
 
           {/* カテゴリ */}
-          <div>
-            <label
-              htmlFor="categoryId"
-              className="block text-sm font-medium mb-2"
-            >
-              カテゴリ
-            </label>
-            <Controller
-              name="categoryId"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={categories.map((category) => ({
-                    value: String(category.id),
-                    label: category.name,
-                  }))}
-                  value={field.value ?? ""}
-                  onChange={field.onChange}
-                  placeholder="カテゴリを選択"
-                  error={errors.categoryId?.message}
-                />
-              )}
-            />
-          </div>
+          <Controller
+            name="categoryId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                id="categoryId"
+                label="カテゴリ"
+                options={categories.map((category) => ({
+                  value: String(category.id),
+                  label: category.name,
+                }))}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                placeholder="カテゴリを選択"
+                error={errors.categoryId?.message}
+              />
+            )}
+          />
 
           {/* アカウント */}
-          <div>
-            <label
-              htmlFor="accountId"
-              className="block text-sm font-medium mb-2"
-            >
-              アカウント
-            </label>
-            <Controller
-              name="accountId"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={accounts.map((account) => ({
-                    value: String(account.id),
-                    label: account.name,
-                  }))}
-                  value={field.value ?? ""}
-                  onChange={field.onChange}
-                  placeholder="アカウントを選択"
-                  error={errors.accountId?.message}
-                />
-              )}
-            />
-          </div>
+          <Controller
+            name="accountId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                id="accountId"
+                label="アカウント"
+                options={accounts.map((account) => ({
+                  value: String(account.id),
+                  label: account.name,
+                }))}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                placeholder="アカウントを選択"
+                error={errors.accountId?.message}
+              />
+            )}
+          />
 
           {/* 説明 */}
           <TextArea

@@ -80,31 +80,146 @@
   - 取引追加ボタンを配置
   - _要件: 要件1（ユーザー認証）_
 
-- [ ] 8. TransactionItemコンポーネントの実装
-  - entities/transaction/ui/TransactionItem.tsxに単一取引の表示コンポーネントを実装
+- [ ] 8. 共有UIコンポーネントの実装
+- [ ] 8.1 EmptyStateコンポーネントの実装
+  - shared/ui/EmptyState.tsxに空状態表示コンポーネントを実装
+  - メッセージとアクションボタンを表示
+  - _要件: 要件10（記録一覧の空状態表示）_
+
+- [ ] 8.2 Badgeコンポーネントの実装
+  - shared/ui/Badge.tsxにバッジコンポーネントを実装
+  - カテゴリ名とカラーを表示
+  - コントラスト比を考慮したテキスト色の調整
+  - _要件: 要件12（記録一覧のカテゴリ表示）_
+
+- [ ] 9. EntryItemコンポーネントの実装
+  - entities/entry/ui/EntryItem.tsxに単一記録の表示コンポーネントを実装
   - 日付、種別、金額、カテゴリ、説明を表示
   - 収入は「+」、支出は「-」で表示
-  - _要件: 要件3（期間別取引取得）_
+  - Badgeコンポーネントを使用してカテゴリを表示
+  - レスポンシブデザイン対応（モバイル: 縦積み、デスクトップ: 横並び）
+  - _要件: 要件8（Dashboard最新記録表示）、要件9（記録一覧ページ）_
 
-- [ ]* 9. 単体テストの実装
-- [ ]* 9.1 バリデーションスキーマのテスト
-  - TransactionInputSchemaとCategoryInputSchemaのテストを作成
-  - 正常系と異常系のテストケースを実装
-  - _要件: 要件6（データバリデーション）_
+- [ ] 10. Entry API関数の実装
+- [ ] 10.1 getRecentEntries関数の実装
+  - entities/entry/api/entryApi.tsにgetRecentEntries関数を実装
+  - 認証チェックを実行
+  - 最新N件の記録を取得（デフォルト: 10件）
+  - カテゴリ情報を含めて取得
+  - 日付降順でソート
+  - _要件: 要件8（Dashboard最新記録表示）_
 
-- [ ]* 9.2 マッパー関数のテスト
-  - mapTransactionsToDomain関数のテストを作成
-  - バリデーション成功と失敗のケースをテスト
-  - _要件: 要件2（取引データ管理）_
+- [ ] 10.2 getEntriesByPeriod関数の実装
+  - entities/entry/api/entryApi.tsにgetEntriesByPeriod関数を実装
+  - 認証チェックを実行
+  - 期間が指定されている場合、指定期間内の記録を取得
+  - 期間が指定されていない場合、すべての記録を取得
+  - カテゴリ情報を含めて取得
+  - 日付降順でソート
+  - _要件: 要件9（記録一覧ページ）、要件10（記録一覧の期間絞り込み）_
 
-- [ ]* 10. 統合テストの実装
-- [ ]* 10.1 API関数のテスト
-  - getTransactionsByPeriod関数のテストを作成
-  - 期間指定、ユーザーフィルタリング、ソート順をテスト
-  - 認証エラーのテストを実装
-  - _要件: 要件3（期間別取引取得）_
+- [ ] 11. RecentEntriesListウィジェットの実装
+- [ ] 11.1 RecentEntriesListコンポーネントの実装
+  - widgets/RecentEntriesList/ui/RecentEntriesList.tsxにコンポーネントを実装
+  - getRecentEntries関数を呼び出してデータを取得
+  - EntryItemコンポーネントを使用して記録を表示
+  - 「すべて見る」ボタンを実装（記録一覧ページへのリンク）
+  - 空状態の表示（EmptyStateコンポーネントを使用）
+  - Server Componentとして実装
+  - _要件: 要件8（Dashboard最新記録表示）_
 
-- [ ]* 10.2 Server Actionのテスト
-  - createTransaction関数のテストを作成
-  - 認証チェック、バリデーション、データベース保存をテスト
-  - _要件: 要件2（取引データ管理）_
+- [ ] 11.2 RecentEntriesListのPublic API作成
+  - widgets/RecentEntriesList/index.tsにエクスポートを定義
+  - RecentEntriesListコンポーネントをエクスポート
+  - _要件: 要件6（FSDアーキテクチャ準拠）_
+
+- [ ] 12. EntriesListウィジェットの実装
+- [ ] 12.1 useEntriesFilterカスタムフックの実装
+  - widgets/EntriesList/model/useEntriesFilter.tsにカスタムフックを実装
+  - 記録一覧の状態管理（entries、isLoading、error）
+  - filterByPeriod関数の実装（期間絞り込み）
+  - getEntriesByPeriod関数を呼び出し
+  - エラーハンドリングを実装
+  - _要件: 要件10（記録一覧の期間絞り込み）_
+
+- [ ] 12.2 PeriodFilterコンポーネントの実装
+  - widgets/EntriesList/ui/PeriodFilter.tsxにコンポーネントを実装
+  - 開始日と終了日の入力フィールドを実装
+  - React Hook FormとZodを統合
+  - バリデーション（開始日 <= 終了日）
+  - 絞り込みボタンとクリアボタンを実装
+  - Client Componentとして実装
+  - _要件: 要件10（記録一覧の期間絞り込み）_
+
+- [ ] 12.3 EntriesListコンポーネントの実装
+  - widgets/EntriesList/ui/EntriesList.tsxにコンポーネントを実装
+  - useEntriesFilterフックを使用
+  - PeriodFilterコンポーネントを配置
+  - EntryItemコンポーネントを使用して記録を表示
+  - 空状態の表示（EmptyStateコンポーネントを使用）
+  - ローディング状態の表示
+  - Client Componentとして実装
+  - _要件: 要件9（記録一覧ページ）、要件10（記録一覧の期間絞り込み）_
+
+- [ ] 12.4 EntriesListのPublic API作成
+  - widgets/EntriesList/index.tsにエクスポートを定義
+  - EntriesListコンポーネントをエクスポート
+  - _要件: 要件6（FSDアーキテクチャ準拠）_
+
+- [ ] 13. Dashboardページの実装
+  - pages/dashboard/index.tsxにDashboardページを実装
+  - 認証チェックを実行（auth()）
+  - 未認証の場合、サインインページへリダイレクト
+  - RecentEntriesListウィジェットを配置
+  - Server Componentとして実装
+  - _要件: 要件8（Dashboard最新記録表示）_
+
+- [ ] 14. 記録一覧ページの実装
+  - pages/entries/index.tsxに記録一覧ページを実装
+  - 認証チェックを実行（auth()）
+  - 未認証の場合、サインインページへリダイレクト
+  - EntriesListウィジェットを配置
+  - Server Componentとして実装
+  - _要件: 要件9（記録一覧ページ）_
+
+- [ ]* 15. 単体テストの実装
+- [ ]* 15.1 EntryItemコンポーネントのテスト
+  - EntryItemコンポーネントのレンダリングテストを作成
+  - 収入/支出の表示テスト
+  - カテゴリバッジの表示テスト
+  - _要件: 要件8（Dashboard最新記録表示）_
+
+- [ ]* 15.2 useEntriesFilterフックのテスト
+  - useEntriesFilterフックのロジックテストを作成
+  - 期間絞り込みのテスト
+  - ローディング状態とエラー状態のテスト
+  - _要件: 要件10（記録一覧の期間絞り込み）_
+
+- [ ]* 16. 統合テストの実装
+- [ ]* 16.1 getRecentEntries関数のテスト
+  - getRecentEntries関数のテストを作成
+  - 件数制限のテスト
+  - ユーザーフィルタリングのテスト
+  - ソート順のテスト
+  - _要件: 要件8（Dashboard最新記録表示）_
+
+- [ ]* 16.2 getEntriesByPeriod関数のテスト
+  - getEntriesByPeriod関数のテストを作成
+  - 期間指定のテスト
+  - 期間未指定のテスト
+  - ユーザーフィルタリングのテスト
+  - _要件: 要件9（記録一覧ページ）、要件10（記録一覧の期間絞り込み）_
+
+- [ ]* 17. E2Eテストの実装
+- [ ]* 17.1 Dashboard表示フローのテスト
+  - Dashboardページへのアクセステスト
+  - 最新記録の表示テスト
+  - 「すべて見る」ボタンのナビゲーションテスト
+  - _要件: 要件8（Dashboard最新記録表示）_
+
+- [ ]* 17.2 記録一覧ページ表示フローのテスト
+  - 記録一覧ページへのアクセステスト
+  - 記録一覧の表示テスト
+  - 期間絞り込みのテスト
+  - 空状態の表示テスト
+  - _要件: 要件9（記録一覧ページ）、要件10（記録一覧の期間絞り込み）_

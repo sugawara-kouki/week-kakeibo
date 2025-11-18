@@ -1105,23 +1105,342 @@ fix: カテゴリ選択のバグを修正
 docs: READMEを更新
 ```
 
-## 11. 今後の拡張計画
+## 11. 記録一覧機能の詳細設計
 
-### 11.1 短期的な拡張
+### 11.1 EntryItem コンポーネント
+
+**対応する基本設計**: F-003（Dashboard最新記録表示）、F-004（記録一覧ページ）
+
+**ファイルパス**: `entities/entry/ui/EntryItem.tsx`
+
+**責務**: 単一の記録を表示する最小UIコンポーネント
+
+**入力**: 
+- entry: Entry型のオブジェクト
+- className: 任意のCSSクラス名
+
+**出力**: 記録情報を表示するHTMLマークアップ
+
+**処理内容**:
+1. 日付をYYYY/MM/DD形式にフォーマット
+2. 記録種別に応じて金額の前に「+」または「-」を表示
+3. カテゴリバッジを表示（カテゴリ名とカラー）
+4. 説明がある場合は表示
+
+**レイアウト方針**:
+- モバイル（768px未満）: 縦積みレイアウト
+- デスクトップ（768px以上）: 横並びレイアウト（テーブル行）
+
+**スタイリング方針**:
+- Tailwind CSSを使用
+- 収入の金額は緑色（text-green-600）
+- 支出の金額は赤色（text-red-600）
+- カテゴリバッジはBadgeコンポーネントを使用
+
+**設計判断**:
+- Server Componentとして実装（インタラクティブな機能不要）
+- Propsは最小限に抑える（entryオブジェクトのみ）
+- レスポンシブデザインはTailwindのブレークポイントを活用
+
+### 11.2 RecentEntriesList ウィジェット
+
+**対応する基本設計**: F-003（Dashboard最新記録表示）
+
+**ファイルパス**: `widgets/RecentEntriesList/ui/RecentEntriesList.tsx`
+
+**責務**: Dashboard内で最新10件の記録を表示
+
+**入力**: なし（内部でデータ取得）
+
+**出力**: 最新記録リストのHTMLマークアップ
+
+**処理フロー**:
+1. 認証チェックを実行（auth()）
+2. userIdが存在しない場合、サインインページへリダイレクト
+3. getRecentEntries関数を呼び出してデータを取得（limit: 10）
+4. 取得した記録をマップしてEntryItemコンポーネントをレンダリング
+5. 記録がない場合、EmptyStateコンポーネントを表示
+6. 「すべて見る」ボタンを表示（記録一覧ページへのリンク）
+
+**表示内容**:
+- セクションタイトル「最近の記録」
+- 最新10件の記録リスト
+- 「すべて見る」ボタン
+- 空状態メッセージ（記録がない場合）
+
+**設計判断**:
+- Server Componentとして実装（データフェッチはサーバーサイド）
+- 「すべて見る」ボタンはNext.jsのLinkコンポーネントを使用
+- 空状態はEmptyStateコンポーネントで統一
+
+### 11.3 EntriesList ウィジェット
+
+**対応する基本設計**: F-004（記録一覧ページ）、F-005（記録一覧の期間絞り込み）
+
+#### 11.3.1 useEntriesFilter カスタムフック
+
+**ファイルパス**: `widgets/EntriesList/model/useEntriesFilter.ts`
+
+**責務**: 記録一覧の期間絞り込みロジックと状態管理
+
+**入力**: なし（フック）
+
+**出力**:
+- entries: 表示する記録の配列
+- isLoading: ローディング状態
+- error: エラーメッセージ
+- filterByPeriod: 期間絞り込み関数
+
+**状態変数**:
+- entries: Entry型の配列（初期値: 空配列）
+- isLoading: boolean（初期値: false）
+- error: string | null（初期値: null）
+
+**関数**: filterByPeriod
+
+**処理フロー**:
+1. isLoadingをtrueに設定
+2. errorをnullにリセット
+3. try-catch-finallyブロック:
+   - try:
+     - getEntriesByPeriod関数を呼び出し（startDate、endDate）
+     - 取得した記録をentriesステートに設定
+   - catch:
+     - エラーをキャッチ
+     - エラーの種類を判定:
+       - "UNAUTHORIZED": "ログインが必要です"を設定
+       - その他: "記録の取得に失敗しました"を設定
+   - finally:
+     - isLoadingをfalseに設定
+
+**設計判断**:
+- Client Componentとして実装（状態管理が必要）
+- エラーハンドリングを適切に実装
+- ローディング状態を管理してUXを向上
+
+#### 11.3.2 PeriodFilter コンポーネント
+
+**ファイルパス**: `widgets/EntriesList/ui/PeriodFilter.tsx`
+
+**責務**: 期間絞り込みフォームの表示と状態管理
+
+**入力**:
+- onFilterChange: 期間変更時のコールバック関数
+
+**出力**: 期間絞り込みフォームのHTMLマークアップ
+
+**処理フロー**:
+1. React Hook Formを初期化（Zodリゾルバーを設定）
+2. フォーム送信時の処理:
+   - バリデーションを実行
+   - 成功時: onFilterChange関数を呼び出し（startDate、endDate）
+   - 失敗時: エラーメッセージを表示
+3. クリアボタンクリック時の処理:
+   - フォームをリセット
+   - onFilterChange関数を呼び出し（null、null）
+
+**バリデーションルール**:
+- 開始日が終了日より後の場合、エラーメッセージを表示
+- 日付形式のバリデーション
+
+**設計判断**:
+- Client Componentとして実装（フォーム状態管理）
+- React Hook FormとZodを統合
+- バリデーションエラーはフィールドごとに表示
+
+#### 11.3.3 EntriesList コンポーネント
+
+**ファイルパス**: `widgets/EntriesList/ui/EntriesList.tsx`
+
+**責務**: 記録一覧ページですべての記録を表示
+
+**入力**: なし（内部でデータ取得）
+
+**出力**: 記録一覧のHTMLマークアップ
+
+**処理フロー**:
+1. useEntriesFilterフックを呼び出し
+2. 初期表示時にすべての記録を取得（filterByPeriod(null, null)）
+3. PeriodFilterコンポーネントを配置
+4. ローディング中の場合、ローディングインジケーターを表示
+5. エラーがある場合、エラーメッセージを表示
+6. 記録がない場合、EmptyStateコンポーネントを表示
+7. 記録がある場合、EntryItemコンポーネントをマップしてレンダリング
+
+**設計判断**:
+- Client Componentとして実装（期間絞り込みのインタラクティブ機能）
+- useEntriesFilterフックで状態管理を分離
+- 空状態、ローディング状態、エラー状態を適切に表示
+
+### 11.4 Entry API関数
+
+#### 11.4.1 getRecentEntries
+
+**ファイルパス**: `entities/entry/api/entryApi.ts`
+
+**責務**: 最新N件の記録を取得
+
+**入力**:
+- limit: 取得件数（デフォルト: 10）
+
+**出力**: Promise<Entry[]> - 記録の配列
+
+**処理フロー**:
+1. auth()を呼び出してユーザー認証情報を取得
+2. userObj.userIdが存在しない場合、Errorをスロー（cause: 401）
+3. prisma.entry.findManyでデータベースクエリを実行:
+   - where条件: userId === userObj.userId
+   - include: { category: true } - カテゴリ情報を含める
+   - orderBy: { date: "desc" } - 日付降順
+   - take: limit - 取得件数を制限
+4. mapEntriesToDomain()でドメインモデルに変換
+5. 変換結果を返す
+
+**設計判断**:
+- サーバーサイドでの認証チェック必須
+- userIdでデータをフィルタリング（セキュリティ）
+- カテゴリ情報を含めて取得（N+1問題の回避）
+- 日付降順でソート
+- 取得件数を制限（パフォーマンス）
+
+#### 11.4.2 getEntriesByPeriod
+
+**ファイルパス**: `entities/entry/api/entryApi.ts`
+
+**責務**: 期間指定で記録を取得
+
+**入力**:
+- startDate: Date | null - 開始日
+- endDate: Date | null - 終了日
+
+**出力**: Promise<Entry[]> - 記録の配列
+
+**処理フロー**:
+1. auth()を呼び出してユーザー認証情報を取得
+2. userObj.userIdが存在しない場合、Errorをスロー（cause: 401）
+3. where条件を構築:
+   - userId === userObj.userId
+   - startDateとendDateが両方指定されている場合:
+     - date >= startDate AND date <= endDate
+   - 指定されていない場合: 期間条件なし
+4. prisma.entry.findManyでデータベースクエリを実行:
+   - where: 構築したwhere条件
+   - include: { category: true } - カテゴリ情報を含める
+   - orderBy: { date: "desc" } - 日付降順
+5. mapEntriesToDomain()でドメインモデルに変換
+6. 変換結果を返す
+
+**設計判断**:
+- サーバーサイドでの認証チェック必須
+- 期間が指定されていない場合、すべての記録を取得
+- where条件を動的に構築
+- カテゴリ情報を含めて取得（N+1問題の回避）
+
+### 11.5 Dashboard ページ
+
+**対応する基本設計**: F-003（Dashboard最新記録表示）
+
+**ファイルパス**: `pages/dashboard/index.tsx`
+
+**責務**: ユーザーのDashboardを表示
+
+**入力**: なし
+
+**出力**: DashboardのHTMLマークアップ
+
+**処理フロー**:
+1. auth()を呼び出してユーザー認証情報を取得
+2. userObj.userIdが存在しない場合、サインインページへリダイレクト
+3. RecentEntriesListウィジェットを配置
+4. その他のウィジェット（週次サマリーなど）を配置
+
+**設計判断**:
+- Server Componentとして実装
+- 認証チェックを最初に実行
+- ウィジェットを組み合わせてページを構成
+
+### 11.6 記録一覧ページ
+
+**対応する基本設計**: F-004（記録一覧ページ）、F-005（記録一覧の期間絞り込み）
+
+**ファイルパス**: `pages/entries/index.tsx`
+
+**責務**: すべての記録を表示し、期間絞り込みを提供
+
+**入力**: なし
+
+**出力**: 記録一覧ページのHTMLマークアップ
+
+**処理フロー**:
+1. auth()を呼び出してユーザー認証情報を取得
+2. userObj.userIdが存在しない場合、サインインページへリダイレクト
+3. EntriesListウィジェットを配置
+
+**設計判断**:
+- Server Componentとして実装
+- 認証チェックを最初に実行
+- EntriesListウィジェットにデータ取得とUI表示を委譲
+
+### 11.7 共有UIコンポーネント
+
+#### 11.7.1 EmptyState コンポーネント
+
+**ファイルパス**: `shared/ui/EmptyState.tsx`
+
+**責務**: 空状態を表示する汎用コンポーネント
+
+**入力**:
+- message: 表示するメッセージ
+- actionLabel: アクションボタンのラベル（任意）
+- onAction: アクションボタンクリック時のコールバック（任意）
+
+**出力**: 空状態のHTMLマークアップ
+
+**処理内容**:
+1. メッセージを表示
+2. actionLabelが指定されている場合、アクションボタンを表示
+3. ボタンクリック時にonAction関数を呼び出し
+
+**設計判断**:
+- 汎用的なコンポーネントとして実装
+- アクションボタンはオプション
+- Tailwind CSSでスタイリング
+
+#### 11.7.2 Badge コンポーネント
+
+**ファイルパス**: `shared/ui/Badge.tsx`
+
+**責務**: カテゴリバッジを表示する汎用コンポーネント
+
+**入力**:
+- label: 表示するラベル
+- color: 背景色（カラーコード）
+
+**出力**: バッジのHTMLマークアップ
+
+**処理内容**:
+1. 背景色を適用
+2. コントラスト比を考慮してテキスト色を調整（明るい背景は黒、暗い背景は白）
+3. ラベルを表示
+
+**設計判断**:
+- 汎用的なコンポーネントとして実装
+- コントラスト比の計算ロジックを実装
+- Tailwind CSSでスタイリング
+
+## 12. 今後の拡張計画
+
+### 12.1 短期的な拡張
 
 1. **週次サマリーウィジェット**
    - widgets/WeeklySummaryの実装
    - 収入・支出の集計表示
 
-2. **取引リストウィジェット**
-   - widgets/TransactionListの実装
-   - フィルタリングとソート機能
-
-3. **カテゴリ管理機能**
+2. **カテゴリ管理機能**
    - features/manageCategoriesの実装
    - カテゴリのCRUD操作
 
-### 11.2 中長期的な拡張
+### 12.2 中長期的な拡張
 
 1. **データ可視化**
    - グラフとチャートの追加
@@ -1135,7 +1454,7 @@ docs: READMEを更新
    - CSV/PDFエクスポート
    - データバックアップ
 
-### 11.3 技術的改善
+### 12.3 技術的改善
 
 1. **パフォーマンス**
    - ページネーション実装

@@ -16,6 +16,14 @@ jobs:
       id-token: write
 
     steps:
+      # 【重要】リポジトリのコードをチェックアウトするステップを追加
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # プルリクエストのすべての履歴を取得するために fetch-depth: 0 を推奨します
+          # これにより、正確なコード差分（diff）をLLMが確認できるようになります。
+          fetch-depth: 0 
+
       - name: Run Claude Code Review
         uses: anthropics/claude-code-action@v1
         with:

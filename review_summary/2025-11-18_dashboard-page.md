@@ -517,3 +517,116 @@ pages/dashboard/
 ---
 
 **💡 ヒント**: この質問は汎用的な内容なので、[FAQ](./FAQ.md#q1-ページ固有のapi関数はpages層に配置すべきですか)にも追加されています。
+
+---
+
+### Q2: `pages/dashboard/model/schema.ts` のスキーマは、API層をEntitiesに移行したから、一緒にEntitiesに移動すべきですか？
+
+**A**: いいえ、このスキーマは**Features層**に配置すべきです。API層とは配置先が異なります。
+
+#### スキーマの性質を確認
+
+```typescript
+// pages/dashboard/model/schema.ts
+export const EntryFormSchema = EntrySchema.omit({
+  id: true,
+  category: true,
+  account: true,
+}).extend({
+  date: v.requiredString(),
+  description: v.nullableString().optional(),
+  categoryId: v.requiredString(),
+  accountId: v.requiredString(),
+});
+
+export const EntryApiSchema = EntryFormSchema.extend({
+  categoryId: v.requiredString().pipe(z.coerce.number()),
+  accountId: v.requiredString().pipe(z.coerce.number()),
+  date: v.requiredString().pipe(z.coerce.date()),
+});
+```
+
+これらのスキーマは：
+- ❌ Entryエンティティのドメインモデルではない
+- ✅ **フォーム入力**という**ユーザーアクション**に特化したスキーマ
+- ✅ EntrySchemaを**加工**している（omit, extend）
+
+#### 配置の判断基準
+
+| スキーマの種類 | 配置先 | 理由 |
+|--------------|--------|------|
+| **ドメインモデル**<br>`EntrySchema` | `entities/entry/model/` | データベースの構造を表現 |
+| **フォーム入力用**<br>`EntryFormSchema` | `features/addTransaction/model/` | ユーザーアクションに特化 |
+| **API送信用**<br>`EntryApiSchema` | `features/addTransaction/model/` | フォームからAPIへの変換 |
+
+#### Entities層 vs Features層のスキーマ
+
+**Entities層のスキーマ（ドメインモデル）:**
+```typescript
+// entities/entry/model/schema.ts
+export const EntrySchema = z.object({
+  id: v.number(),
+  type: EntryTypeSchema,
+  amount: v.positiveNumber(),
+  date: v.date(),
+  description: v.nullableMaxLengthString(255),
+  categoryId: v.number(),
+  accountId: v.number(),
+  category: CategorySchema,
+  account: AccountSchema,
+});
+```
+→ **データベースの構造そのまま**（ドメインの真実）
+
+**Features層のスキーマ（ユーザーアクション用）:**
+```typescript
+// features/addTransaction/model/schema.ts
+export const EntryFormSchema = EntrySchema.omit({
+  id: true,        // フォームでは不要（サーバーで生成）
+  category: true,  // フォームでは不要（categoryIdのみ）
+  account: true,   // フォームでは不要（accountIdのみ）
+}).extend({
+  date: v.requiredString(),      // フォームでは文字列入力
+  categoryId: v.requiredString(), // フォームでは文字列（selectの値）
+  accountId: v.requiredString(),  // フォームでは文字列（selectの値）
+});
+```
+→ **フォーム入力に最適化**（ユーザーの操作に合わせた形）
+
+#### 正しい配置
+
+```
+entities/entry/
+  model/
+    schema.ts           # EntrySchema（ドメインモデル）
+  api/
+    entryApi.ts         # createTransaction, getTransactionsByPeriod
+
+features/addTransaction/
+  model/
+    schema.ts           # EntryFormSchema, EntryApiSchema（フォーム用）
+  ui/
+    AddTransactionForm.tsx
+```
+
+#### 判断のポイント
+
+**重要な原則:**
+- **Entities** = ドメインの構造（データベースの真実）
+- **Features** = ユーザーの意図（アクション）
+
+**このケースの判断:**
+- `entryApi.ts` → `entities/entry/api/` に移動
+  - 理由: Entryエンティティに対する**CRUD操作**だから
+  
+- `schema.ts` → `features/addTransaction/model/` に移動
+  - 理由: **「取引を追加する」というユーザーアクション**に特化したスキーマだから
+
+#### 結論
+
+API層とModel層は**必ずしも一緒に移動するわけではありません**。それぞれの責務に応じて適切なレイヤーに配置します。
+
+- **API関数**: エンティティのCRUD → `entities`
+- **フォーム用スキーマ**: ユーザーアクション → `features`
+
+フォーム用のスキーマは「取引を追加する」というユーザーアクションに関するものなので、`features/addTransaction/model/`に配置するのが正しいです。

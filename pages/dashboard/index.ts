@@ -1,2 +1,1 @@
-export { createTransaction } from "./api/entryApi";
-export { DashBoardPage } from "./ui/DashBoardPage";
+export { DashboardPage } from "./ui/DashboardPage";

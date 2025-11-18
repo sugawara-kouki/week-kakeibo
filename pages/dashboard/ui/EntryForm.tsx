@@ -4,14 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
-import type { Account } from "@/entities/account/model/schema";
-import type { Category } from "@/entities/category/model/schema";
-import { ENTRY_TYPE } from "@/entities/entry";
-import { createTransaction } from "@/pages/dashboard/api/entryApi";
+import type { Account } from "@/entities/account";
+import type { Category } from "@/entities/category";
 import {
-  EntryFormSchema,
-  type EntryForm as EntryFormType,
-} from "@/pages/dashboard/model/schema";
+  type CreateEntryInput,
+  createEntry,
+  ENTRY_TYPE,
+} from "@/entities/entry";
+import { type EntryFormData, EntryFormSchema } from "@/features/addEntry";
 import { useLoadingAction } from "@/shared/lib/hooks";
 import { Dialog, Input, RadioGroup, Select, TextArea } from "@/shared/ui";
 
@@ -29,7 +29,7 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
     formState: { errors },
     reset,
     control,
-  } = useForm<EntryFormType>({
+  } = useForm<EntryFormData>({
     resolver: zodResolver(EntryFormSchema),
     defaultValues: {
       type: ENTRY_TYPE.EXPENSE,
@@ -39,12 +39,20 @@ export function EntryForm({ categories, accounts }: EntryFormProps) {
     },
   });
 
-  const onSubmit = async (formData: EntryFormType) => {
+  const onSubmit = async (formData: EntryFormData) => {
     await execute(
-      () => {
-        createTransaction(formData);
+      async () => {
+        // フォームデータをAPI入力形式に変換
+        const input: CreateEntryInput = {
+          type: formData.type,
+          amount: formData.amount,
+          date: new Date(formData.date),
+          description: formData.description || null,
+          categoryId: Number(formData.categoryId),
+          accountId: Number(formData.accountId),
+        };
+        await createEntry(input);
         toast.success("取引を正常に登録しました");
-        // フォーム入力をリセット
         reset();
       },
       (error) => {

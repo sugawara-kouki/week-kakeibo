@@ -1,9 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { getAccounts } from "@/entities/account";
 import { getCategories } from "@/entities/category";
-import { DashBoardPage } from "@/pages/dashboard";
+import { DashboardPage } from "@/pages/dashboard";
 
-export default async function DashBoard() {
+export default async function Dashboard() {
   // 認証チェック
   const authObject = await auth();
 
@@ -19,7 +19,7 @@ export default async function DashBoard() {
   ]);
 
   return (
-    <DashBoardPage
+    <DashboardPage
       categories={categories}
       accounts={accounts}
       userId={authObject.userId}

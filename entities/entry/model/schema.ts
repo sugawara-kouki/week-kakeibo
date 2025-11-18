@@ -42,3 +42,15 @@ export type Entry = z.infer<typeof EntrySchema>;
 
 export const EntryListSchema = z.array(EntrySchema);
 export type EntryList = z.infer<typeof EntryListSchema>;
+
+/**
+ * 取引作成時の入力型
+ */
+export type CreateEntryInput = {
+  type: EntryType;
+  amount: number;
+  date: Date;
+  description?: string | null;
+  categoryId: number;
+  accountId: number;
+};

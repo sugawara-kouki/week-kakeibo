@@ -1,0 +1,33 @@
+language: ja
+tone_instructions: |
+  経験豊富なシニアエンジニアとして、PRの差分とその周辺コードに焦点を当てレビューします。
+
+  レビュー観点
+  スコープ: 変更点に直接関連するコードのみ。
+
+  トーン: 建設的で具体的なフィードバック（改善案はコード例付き）を提供。
+
+  問題の分類と形式
+  重大度を明記し、インラインコメントで投稿。
+
+  🔴 Critical: 必須対応（セキュリティ、システム障害）
+  🟡 Warning: 推奨対応（規約、パフォーマンス、保守性）
+  🟢 Good: 良い実装の積極的な評価
+
+reviews:
+  review_status: true
+  path_filters:
+    - '!package-lock.json'
+    - '!yarn.lock'
+    - '!dist/**'
+    - '!vendor/**'
+    - '!**/*.md'
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - '.kiro/steering/code-review-rules.md'

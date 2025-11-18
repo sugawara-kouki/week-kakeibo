@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
+import { Input } from "@/app/Input";
 import type { Account } from "@/entities/account";
 import type { Category } from "@/entities/category";
 import {
@@ -13,7 +14,7 @@ import {
 } from "@/entities/entry";
 import { type EntryFormData, EntryFormSchema } from "@/features/addEntry";
 import { useLoadingAction } from "@/shared/lib/hooks";
-import { Dialog, Input, RadioGroup, Select, TextArea } from "@/shared/ui";
+import { Dialog, RadioGroup, Select, TextArea } from "@/shared/ui";
 
 interface EntryFormProps {
   categories: Category[];

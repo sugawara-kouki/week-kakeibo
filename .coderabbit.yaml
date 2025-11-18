@@ -1,11 +1,5 @@
-# バージョン情報
-version: 2 # カスタム機能を利用するためにバージョン2を指定
-
-# ----------------------------------------------------
-# 1. AIへの指示（プロンプト）
-#    AIのレビュー観点、トーン、コメント形式をここで定義します。
-# ----------------------------------------------------
-prompt: |
+language: ja
+tone_instructions: |
   あなたは経験豊富なシニアエンジニアです。以下のガイドラインに従って、
   Pull Requestの差分とその周辺コードに焦点を当ててレビューを行ってください。
 
@@ -22,29 +16,21 @@ prompt: |
   * **🟢 Good:** 良い実装を積極的に評価してください。
 
   レビュー結果は、差分行に対するインラインコメントとして投稿してください。
-  
-# ----------------------------------------------------
-# 2. 外部ルールドキュメントの参照
-#    プロジェクト固有のコードレビュー規則をAIに提供します。
-# ----------------------------------------------------
-rules:
-  # ファイルパスの指定
-  - path: .kiro/steering/code-review-rules.md
-    # AIがこのファイルをどう扱うかを指示
-    description: "このプロジェクトの公式なコードレビュー規則です。レビュー時に必ず参照してください。"
-    type: "document" # ドキュメントとして参照させる
-
-# ----------------------------------------------------
-# 3. レビュー対象外の設定 (任意)
-#    レビューコストの削減とノイズの除去
-# ----------------------------------------------------
-exclude_paths:
-  - 'package-lock.json'
-  - 'yarn.lock'
-  - 'dist/*'
-  - 'vendor/*'
-  - '**/*.md'
 
 reviews:
-  review_status: "complete"
-  incremental_review: false
+  review_status: true
+  path_filters:
+    - '!package-lock.json'
+    - '!yarn.lock'
+    - '!dist/**'
+    - '!vendor/**'
+    - '!**/*.md'
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - '.kiro/steering/code-review-rules.md'

@@ -44,3 +44,7 @@ exclude_paths:
   - 'dist/*'
   - 'vendor/*'
   - '**/*.md'
+
+reviews:
+  review_status: "complete"
+  incremental_review: false

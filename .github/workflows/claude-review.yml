@@ -34,3 +34,4 @@ jobs:
           prompt: "/review"
           claude_args: "--max-turns 5 --model claude-sonnet-4-5-20250929"
           use_sticky_comment: true
+          show_full_output: true

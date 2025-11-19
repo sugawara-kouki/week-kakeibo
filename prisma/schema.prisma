@@ -27,7 +27,7 @@ model Transaction {
 model Category {
   id           Int           @id @default(autoincrement())
   name         String        @unique
-  color        String        @default("#cccccc")
+  color        String        @default("gray")
   userId       String?       @db.VarChar(255)
   transactions Transaction[]
 

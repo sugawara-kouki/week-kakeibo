@@ -11,3 +11,4 @@ export {
   EntrySchema,
   EntryTypeSchema,
 } from "./model/schema";
+export { EntryItem } from "./ui/EntryItem";

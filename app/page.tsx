@@ -19,10 +19,12 @@ export default async function Dashboard() {
   ]);
 
   return (
-    <DashboardPage
-      categories={categories}
-      accounts={accounts}
-      userId={authObject.userId}
-    />
+    <div className="bg-red-100">
+      <DashboardPage
+        categories={categories}
+        accounts={accounts}
+        userId={authObject.userId}
+      />
+    </div>
   );
 }

@@ -100,8 +100,8 @@
   - レスポンシブデザイン対応（モバイル: 縦積み、デスクトップ: 横並び）
   - _要件: 要件8（Dashboard最新記録表示）、要件9（記録一覧ページ）_
 
-- [ ] 10. Entry API関数の実装
-- [ ] 10.1 getRecentEntries関数の実装
+- [x] 10. Entry API関数の実装
+- [x] 10.1 getRecentEntries関数の実装
   - entities/entry/api/entryApi.tsにgetRecentEntries関数を実装
   - 認証チェックを実行
   - 最新N件の記録を取得（デフォルト: 10件）
@@ -109,7 +109,7 @@
   - 日付降順でソート
   - _要件: 要件8（Dashboard最新記録表示）_
 
-- [ ] 10.2 getEntriesByPeriod関数の実装
+- [x] 10.2 getEntriesByPeriod関数の実装
   - entities/entry/api/entryApi.tsにgetEntriesByPeriod関数を実装
   - 認証チェックを実行
   - 期間が指定されている場合、指定期間内の記録を取得

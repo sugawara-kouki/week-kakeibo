@@ -1,4 +1,9 @@
-export { createEntry, getEntryListByPeriod } from "./api/entryApi";
+export {
+  createEntry,
+  getEntriesByPeriod,
+  getEntryListByPeriod,
+  getRecentEntries,
+} from "./api/entryApi";
 export type {
   CreateEntryInput,
   Entry,

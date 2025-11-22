@@ -1,0 +1,103 @@
+{
+  "common": {
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "close": "閉じる",
+    "select": "選択してください",
+    "required": "必須です",
+    "optional": "任意"
+  },
+  "dashboard": {
+    "title": "週単位家計簿",
+    "userId": "ユーザーID",
+    "addEntry": "取引を追加",
+    "summary": {
+      "income": "収入",
+      "expense": "支出",
+      "balance": "残高"
+    }
+  },
+  "entry": {
+    "title": "取引",
+    "addNew": "新しい取引を追加",
+    "type": {
+      "label": "種別",
+      "income": "収入",
+      "expense": "支出"
+    },
+    "form": {
+      "amount": "金額",
+      "amountPlaceholder": "1000",
+      "date": "日付",
+      "category": "カテゴリ",
+      "categoryPlaceholder": "カテゴリを選択",
+      "account": "アカウント",
+      "accountPlaceholder": "アカウントを選択",
+      "description": "説明（任意）",
+      "descriptionPlaceholder": "取引の詳細を入力"
+    },
+    "success": {
+      "created": "取引を正常に登録しました",
+      "updated": "取引を更新しました",
+      "deleted": "取引を削除しました"
+    },
+    "empty": "取引がありません"
+  },
+  "category": {
+    "title": "カテゴリ",
+    "name": "カテゴリ名",
+    "color": "カラー",
+    "addNew": "新しいカテゴリを追加",
+    "form": {
+      "name": "カテゴリ名",
+      "namePlaceholder": "食費",
+      "color": "カラー"
+    },
+    "success": {
+      "created": "カテゴリを作成しました",
+      "updated": "カテゴリを更新しました",
+      "deleted": "カテゴリを削除しました"
+    },
+    "empty": "カテゴリがありません"
+  },
+  "account": {
+    "title": "アカウント",
+    "name": "アカウント名",
+    "addNew": "新しいアカウントを追加",
+    "form": {
+      "name": "アカウント名",
+      "namePlaceholder": "現金",
+      "initialBalance": "初期残高",
+      "initialBalancePlaceholder": "0"
+    },
+    "success": {
+      "created": "アカウントを作成しました",
+      "updated": "アカウントを更新しました",
+      "deleted": "アカウントを削除しました"
+    },
+    "empty": "アカウントがありません"
+  },
+  "error": {
+    "unknown": "エラーが発生しました",
+    "unauthorized": "ログインが必要です",
+    "validation": "入力内容に誤りがあります",
+    "notFound": "データが見つかりません",
+    "categoryNotFound": "カテゴリが見つかりません",
+    "accountNotFound": "アカウントが見つかりません",
+    "entryNotFound": "取引が見つかりません",
+    "network": "ネットワークエラーが発生しました",
+    "server": "サーバーエラーが発生しました"
+  },
+  "validation": {
+    "required": "必須です",
+    "maxLength": "{{max}}文字以内で入力してください",
+    "positive": "正の値である必要があります",
+    "nonNegative": "0以上の値を入力してください",
+    "invalidDate": "有効な日付を入力してください",
+    "invalidEmail": "有効なメールアドレスを入力してください",
+    "invalidUrl": "有効なURLを入力してください"
+  }
+}

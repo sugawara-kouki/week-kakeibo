@@ -1,0 +1,103 @@
+{
+  "common": {
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "select": "请选择",
+    "required": "必填",
+    "optional": "可选"
+  },
+  "dashboard": {
+    "title": "每周记账本",
+    "userId": "用户ID",
+    "addEntry": "添加交易",
+    "summary": {
+      "income": "收入",
+      "expense": "支出",
+      "balance": "余额"
+    }
+  },
+  "entry": {
+    "title": "交易",
+    "addNew": "添加新交易",
+    "type": {
+      "label": "类型",
+      "income": "收入",
+      "expense": "支出"
+    },
+    "form": {
+      "amount": "金额",
+      "amountPlaceholder": "1000",
+      "date": "日期",
+      "category": "类别",
+      "categoryPlaceholder": "选择类别",
+      "account": "账户",
+      "accountPlaceholder": "选择账户",
+      "description": "说明（可选）",
+      "descriptionPlaceholder": "输入交易详情"
+    },
+    "success": {
+      "created": "交易创建成功",
+      "updated": "交易已更新",
+      "deleted": "交易已删除"
+    },
+    "empty": "暂无交易"
+  },
+  "category": {
+    "title": "类别",
+    "name": "类别名称",
+    "color": "颜色",
+    "addNew": "添加新类别",
+    "form": {
+      "name": "类别名称",
+      "namePlaceholder": "餐饮",
+      "color": "颜色"
+    },
+    "success": {
+      "created": "类别已创建",
+      "updated": "类别已更新",
+      "deleted": "类别已删除"
+    },
+    "empty": "暂无类别"
+  },
+  "account": {
+    "title": "账户",
+    "name": "账户名称",
+    "addNew": "添加新账户",
+    "form": {
+      "name": "账户名称",
+      "namePlaceholder": "现金",
+      "initialBalance": "初始余额",
+      "initialBalancePlaceholder": "0"
+    },
+    "success": {
+      "created": "账户已创建",
+      "updated": "账户已更新",
+      "deleted": "账户已删除"
+    },
+    "empty": "暂无账户"
+  },
+  "error": {
+    "unknown": "发生错误",
+    "unauthorized": "需要登录",
+    "validation": "输入内容有误",
+    "notFound": "未找到数据",
+    "categoryNotFound": "未找到类别",
+    "accountNotFound": "未找到账户",
+    "entryNotFound": "未找到交易",
+    "network": "网络错误",
+    "server": "服务器错误"
+  },
+  "validation": {
+    "required": "必填",
+    "maxLength": "请在{{max}}个字符内输入",
+    "positive": "必须为正值",
+    "nonNegative": "请输入0或更大的值",
+    "invalidDate": "请输入有效日期",
+    "invalidEmail": "请输入有效的电子邮件地址",
+    "invalidUrl": "请输入有效的URL"
+  }
+}

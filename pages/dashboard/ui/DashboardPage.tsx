@@ -14,7 +14,7 @@ export async function DashboardPage({
   userId,
 }: DashboardProps) {
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container mx-auto px-4 py-8 bg-red-200">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">週単位家計簿</h1>
 

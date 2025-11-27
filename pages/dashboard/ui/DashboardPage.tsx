@@ -8,7 +8,7 @@ interface DashboardProps {
   userId: string;
 }
 
-export async function DashboardPage({
+export function DashboardPage({
   categories,
   accounts,
   userId,

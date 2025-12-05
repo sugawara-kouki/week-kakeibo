@@ -1,7 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
-import { getAccounts } from "@/entities/account";
-import { getCategories } from "@/entities/category";
-import { DashboardPage } from "@/pages/dashboard";
+import { DashboardPage } from "@/components/dashboard";
+import { getAccountList } from "@/domain/account/actions";
+import { getCategoryList } from "@/domain/category/actions";
+import { createEntry } from "@/domain/entry/actions";
 
 export default async function Dashboard() {
   // 認証チェック
@@ -14,8 +15,8 @@ export default async function Dashboard() {
 
   // カテゴリとアカウントのデータを取得
   const [categories, accounts] = await Promise.all([
-    getCategories(),
-    getAccounts(),
+    getCategoryList(),
+    getAccountList(),
   ]);
 
   return (
@@ -24,6 +25,7 @@ export default async function Dashboard() {
         categories={categories}
         accounts={accounts}
         userId={authObject.userId}
+        onCreateEntry={createEntry}
       />
     </div>
   );

@@ -1,0 +1,86 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["import"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "rules": {
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "zones": [
+          {
+            "target": "./lib",
+            "from": "./domain",
+            "message": "❌ lib/ は domain/ に依存できません。依存関係: lib/ → domain/ は禁止されています。"
+          },
+          {
+            "target": "./lib",
+            "from": "./components",
+            "message": "❌ lib/ は components/ に依存できません。依存関係: lib/ → components/ は禁止されています。"
+          },
+          {
+            "target": "./lib",
+            "from": "./app",
+            "message": "❌ lib/ は app/ に依存できません。依存関係: lib/ → app/ は禁止されています。"
+          },
+          {
+            "target": "./domain",
+            "from": "./components",
+            "message": "❌ domain/ は components/ に依存できません。依存関係: domain/ → components/ は禁止されています。"
+          },
+          {
+            "target": "./domain",
+            "from": "./app",
+            "message": "❌ domain/ は app/ に依存できません。依存関係: domain/ → app/ は禁止されています。"
+          },
+          {
+            "target": "./components",
+            "from": "./app",
+            "message": "❌ components/ は app/ に依存できません。依存関係: components/ → app/ は禁止されています。"
+          },
+          {
+            "target": "./components/entry",
+            "from": "./components/category",
+            "message": "❌ ドメイン専用コンポーネント間の直接依存は禁止です。components/entry/ → components/category/ は禁止されています。複合UIコンポーネント（components/dashboard/など）を経由してください。"
+          },
+          {
+            "target": "./components/entry",
+            "from": "./components/account",
+            "message": "❌ ドメイン専用コンポーネント間の直接依存は禁止です。components/entry/ → components/account/ は禁止されています。複合UIコンポーネント（components/dashboard/など）を経由してください。"
+          },
+          {
+            "target": "./components/category",
+            "from": "./components/entry",
+            "message": "❌ ドメイン専用コンポーネント間の直接依存は禁止です。components/category/ → components/entry/ は禁止されています。複合UIコンポーネント（components/dashboard/など）を経由してください。"
+          },
+          {
+            "target": "./components/category",
+            "from": "./components/account",
+            "message": "❌ ドメイン専用コンポーネント間の直接依存は禁止です。components/category/ → components/account/ は禁止されています。複合UIコンポーネント（components/dashboard/など）を経由してください。"
+          },
+          {
+            "target": "./components/account",
+            "from": "./components/entry",
+            "message": "❌ ドメイン専用コンポーネント間の直接依存は禁止です。components/account/ → components/entry/ は禁止されています。複合UIコンポーネント（components/dashboard/など）を経由してください。"
+          },
+          {
+            "target": "./components/account",
+            "from": "./components/category",
+            "message": "❌ ドメイン専用コンポーネント間の直接依存は禁止です。components/account/ → components/category/ は禁止されています。複合UIコンポーネント（components/dashboard/など）を経由してください。"
+          }
+        ]
+      }
+    ]
+  }
+}

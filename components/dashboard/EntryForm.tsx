@@ -4,7 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
-import { Dialog, Input, RadioGroup, Select, TextArea } from "@/components/ui";
+import { Dialog } from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
+import { RadioGroup } from "@/components/ui/RadioGroup";
+import { Select } from "@/components/ui/Select";
+import { TextArea } from "@/components/ui/TextArea";
 import type { Account } from "@/domain/account/schema";
 import type { Category } from "@/domain/category/schema";
 import type {
@@ -13,7 +17,7 @@ import type {
   EntryFormData,
 } from "@/domain/entry/schema";
 import { ENTRY_TYPE, EntryFormSchema } from "@/domain/entry/schema";
-import { useLoadingAction } from "@/lib/hooks";
+import { useLoadingAction } from "@/lib/hooks/useLoadingAction";
 
 interface EntryFormProps {
   categories: Category[];

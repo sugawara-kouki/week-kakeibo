@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui";
+import { Badge } from "@/components/ui/Badge";
 import type { Entry } from "@/domain/entry/schema";
 import { ENTRY_TYPE } from "@/domain/entry/schema";
 

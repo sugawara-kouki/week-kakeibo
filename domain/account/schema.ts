@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ValidationSchemas as v } from "@/lib/validation";
+import { ValidationSchemas as v } from "@/lib/validation/schemas";
 
 /** アカウントデータのスキーマ */
 export const AccountSchema = z.object({

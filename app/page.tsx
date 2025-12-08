@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { DashboardPage } from "@/components/dashboard";
+import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { getAccountList } from "@/domain/account/actions";
 import { getCategoryList } from "@/domain/category/actions";
 import { createEntry } from "@/domain/entry/actions";

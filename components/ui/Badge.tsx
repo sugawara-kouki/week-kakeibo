@@ -1,4 +1,4 @@
-import { BADGE_COLORS, type BadgeColor } from "@/lib/types";
+import { BADGE_COLORS, type BadgeColor } from "@/lib/types/types";
 
 /**
  * カテゴリバッジを表示するコンポーネント

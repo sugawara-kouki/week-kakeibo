@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { BADGE_COLORS, type BadgeColor } from "@/lib/types";
-import { ValidationSchemas as v } from "@/lib/validation";
+import { BADGE_COLORS, type BadgeColor } from "@/lib/types/types";
+import { ValidationSchemas as v } from "@/lib/validation/schemas";
 
 /** 利用可能なカラーの配列 */
 const AVAILABLE_COLORS = Object.keys(BADGE_COLORS) as [

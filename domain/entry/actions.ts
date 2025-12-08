@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUserId } from "@/lib/auth";
-import { prisma } from "@/lib/db";
-import { validateValue } from "@/lib/validation";
+import { getCurrentUserId } from "@/lib/auth/getCurrentUserId";
+import { prisma } from "@/lib/db/db";
+import { validateValue } from "@/lib/validation/validateValue";
 import {
   type CreateEntryInput,
   type Entry,

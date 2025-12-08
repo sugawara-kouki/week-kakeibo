@@ -1,8 +1,8 @@
 import z from "zod";
 import { AccountSchema } from "@/domain/account/schema";
 import { CategorySchema } from "@/domain/category/schema";
-import type { ValueOf } from "@/lib/types";
-import { ValidationSchemas as v } from "@/lib/validation";
+import type { ValueOf } from "@/lib/types/types";
+import { ValidationSchemas as v } from "@/lib/validation/schemas";
 
 /**
  * 取引種別

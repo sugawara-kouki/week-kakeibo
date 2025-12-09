@@ -3,7 +3,7 @@ import type { Category } from "@/domain/category/schema";
 import type { CreateEntryInput, Entry } from "@/domain/entry/schema";
 import { EntryForm } from "./EntryForm";
 
-interface DashboardProps {
+export interface DashboardProps {
   categories: Category[];
   accounts: Account[];
   userId: string;

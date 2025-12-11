@@ -1,23 +1,23 @@
-import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // ----------------------------------------------------------
 // 外部依存のモック
 // ----------------------------------------------------------
 
-// vi.fn()を使ってEntryFormをモック化し、スパイ(役割を代替)できるようにする
-let MockEntryForm: ReturnType<typeof vi.fn>;
-vi.mock("./EntryForm", () => {
-  // モックの実装をここで行う
-  MockEntryForm = vi.fn((props) => {
+// NOTE:: vi.hoisted() を使用してモック関数を定義することで、
+// Vitestのモジュール巻き上げ(ホスティング)を回避し、
+// テストコードのスコープ内でスパイ関数を安全に参照できるようにする
+const { mockEntryForm } = vi.hoisted(() => {
+  const mockEntryForm = vi.fn(() => {
     return <div data-testid="mock-entry-form" />;
   });
 
-  // エクスポート
-  return {
-    EntryForm: MockEntryForm,
-  };
+  return { mockEntryForm };
 });
+vi.mock("./EntryForm", () => ({
+  EntryForm: mockEntryForm,
+}));
 
 // ----------------------------------------------------------
 // ダミーデータの定義
@@ -37,6 +37,12 @@ const DEFAULT_MOCK_ACCOUNTS: AccountList = [
   { id: 1, name: "PeiPei残高", initialBalance: 5000 },
 ];
 const MOCK_ON_CREATE_ENTRY = vi.fn();
+
+const EXPECTED_ENTRY_FORM_PROPS = {
+  categories: DEFAULT_MOCK_CATEGORIES,
+  accounts: DEFAULT_MOCK_ACCOUNTS,
+  onSubmit: MOCK_ON_CREATE_ENTRY,
+};
 
 // ------------------------------------------------
 // ヘルパー関数
@@ -62,6 +68,9 @@ const renderComponent = (props?: Partial<DashboardProps>) => {
 // テストスイート
 // ------------------------------------------------
 describe("DashboardPage", () => {
+  afterEach(() => {
+    cleanup();
+  });
   // beforeEachを使って、全てのテストの前にレンダリングを実行
   // 各テストケースで renderComponent を呼び出す手間を省くことも可能だが
   // 今回はテストケースごとにPropsを変更する可能性があるため、Factoryを使う形で記述
@@ -88,12 +97,13 @@ describe("DashboardPage", () => {
       renderComponent();
 
       // MockEntryFormが正しいPropsで呼び出されたかを検証
-      expect(MockEntryForm).toHaveBeenCalledWith(
+      expect(mockEntryForm).toHaveBeenCalledWith(
         expect.objectContaining({
           categories: DEFAULT_MOCK_CATEGORIES,
           accounts: DEFAULT_MOCK_ACCOUNTS,
+          onSubmit: MOCK_ON_CREATE_ENTRY,
         }),
-        {},
+        undefined,
       );
     });
   });
